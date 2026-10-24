@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Menu,
   Search,
@@ -9,16 +10,22 @@ import {
   AlertTriangle,
   User,
   ShieldCheck,
+  LogOut,
+  Settings as SettingsIcon,
 } from 'lucide-react';
 import { useExpense } from '../context/ExpenseContext';
+import { useAuth } from '../context/AuthContext';
 
 export const Navbar = ({ onOpenMobileSidebar }) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const {
     userProfile,
     openAddModal,
     budgetProgress,
     globalSearch,
     setGlobalSearch,
+    showToast,
   } = useExpense();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -241,6 +248,32 @@ export const Navbar = ({ onOpenMobileSidebar }) => {
                       <ShieldCheck className="w-3.5 h-3.5" /> Verified
                     </span>
                   </div>
+                </div>
+
+                <div className="pt-3 mt-3 border-t border-[#273449] space-y-1">
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      navigate('/settings');
+                    }}
+                    className="w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-semibold text-[#F8FAFC] hover:bg-[#1E293B] transition-colors"
+                  >
+                    <SettingsIcon className="w-4 h-4 text-[#94A3B8]" />
+                    <span>Account Settings</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      logout();
+                      showToast('Logged out successfully', 'info');
+                      navigate('/login');
+                    }}
+                    className="w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4 text-rose-400" />
+                    <span>Sign Out</span>
+                  </button>
                 </div>
               </div>
             </>
