@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   ArrowLeftRight,
@@ -11,7 +11,10 @@ import {
   X,
   Wallet,
   Sparkles,
+  LogOut,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useExpense } from '../context/ExpenseContext';
 
 export const NAV_LINKS = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -27,6 +30,18 @@ export const Sidebar = ({
   isMobileOpen,
   setIsMobileOpen,
 }) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { userProfile, showToast } = useExpense();
+
+  const handleLogout = () => {
+    setIsMobileOpen(false);
+    logout();
+    showToast('Logged out successfully', 'info');
+    navigate('/login');
+  };
+
+  const userInitial = userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'U';
   return (
     <>
       {/* Mobile Backdrop */}
@@ -128,6 +143,40 @@ export const Sidebar = ({
             </p>
           </div>
         )}
+
+        {/* User Profile & Sign Out */}
+        <div className="p-3 border-t border-[#273449]">
+          <div
+            className={`flex items-center ${
+              isCollapsed && !isMobileOpen ? 'justify-center' : 'justify-between'
+            } gap-2 p-1.5 rounded-xl bg-[#172033]/60 border border-[#273449]/70`}
+          >
+            <div className="flex items-center space-x-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                {userInitial}
+              </div>
+              {(!isCollapsed || isMobileOpen) && (
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-[#F8FAFC] truncate">
+                    {userProfile?.name?.split(' ')[0] || 'User'}
+                  </p>
+                  <p className="text-[10px] text-[#94A3B8] truncate">{userProfile?.email}</p>
+                </div>
+              )}
+            </div>
+
+            {(!isCollapsed || isMobileOpen) ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                title="Sign Out"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors flex-shrink-0"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            ) : null}
+          </div>
+        </div>
 
         {/* Footer / Desktop Collapse Toggle */}
         <div className="hidden lg:flex items-center justify-between p-3 border-t border-[#273449]">
