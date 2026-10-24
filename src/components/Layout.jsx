@@ -5,7 +5,6 @@ import Navbar from './Navbar';
 import MobileBottomNav from './MobileBottomNav';
 import TransactionFormModal from './TransactionForm';
 import ConfirmModal from './ConfirmModal';
-import ToastContainer from './Toast';
 
 export const Layout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -42,7 +41,6 @@ export const Layout = () => {
       {/* Global Modals & Notifications */}
       <TransactionFormModal />
       <ConfirmModal />
-      <ToastContainer />
     </div>
   );
 };
